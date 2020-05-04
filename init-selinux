@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+clear
+
+# Check if user is root
+if [ $(id -u) != "0" ]; then
+  echo "Error: You must be root to run this script."
+  exit 1
+fi
+
+echo "================================================================================"
+echo "selinux off"
+echo "================================================================================"
+
+
+# Disable SeLinux
+if [ -s /etc/selinux/config ]; then
+  sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
+  setenforce 0
+fi
