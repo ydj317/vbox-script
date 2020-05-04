@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+clear
+
+# Check if user is root
+if [ $(id -u) != "0" ]; then
+  echo "Error: You must be root to run this script."
+  exit 1
+fi
+
+echo "================================================================================"
+echo "share folder"
+echo "================================================================================"
+
+yum -y install kernel-devel bzip2 gcc
+
+echo "You need mount VBoxLinuxAdditions"
+echo "press enter to continue"
+
+read VAR
+
+mkdir /mnt/cdrom
+mount /dev/cdrom /mnt/cdrom
+
+/mnt/cdrom/VBoxLinuxAdditions.run
+
+mkdir /home/public
+
+echo "You need mount VBOX: public"
+echo "press enter to continue"
+
+read VAR
+
+echo "[Unit]
+Description=home public mount
+[Mount]
+What=public
+Where=/home/public
+Type=vboxsf
+Options=defaults
+[Install]
+WantedBy=multi-user.target" > /usr/lib/systemd/system/home-public.mount
+
+systemctl enable home-public.mount
+systemctl start home-public.mount
