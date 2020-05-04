@@ -21,7 +21,8 @@ IPADDR0=192.168.56.200" > /etc/sysconfig/network-scripts/ifcfg-enp0s8
 
 systemctl restart network
 
-echo "set ok"
+echo "host-only ip set > ok"
+echo "press enter to continue"
 
 read VAR
 
@@ -38,7 +39,8 @@ if [ -s /etc/selinux/config ]; then
   setenforce 0
 fi
 
-echo "set ok"
+echo "selinux off > ok"
+echo "press enter to continue"
 
 read VAR
 
@@ -56,7 +58,8 @@ curl http://mirrors.163.com/.help/CentOS7-Base-163.repo -o /etc/yum.repos.d/Cent
 yum clean all
 yum makecache
 
-echo "set ok"
+echo "change yum repo > ok"
+echo "press enter to continue"
 
 read VAR
 
@@ -71,16 +74,14 @@ echo "==========================================================================
 # 安装需要的库
 yum -y install kernel-devel bzip2 gcc
 
+echo "You need mount VBoxLinuxAdditions"
+echo "press enter to continue"
+
+read VAR
 
 #挂载 增强工具
 mkdir /mnt/cdrom
 mount /dev/cdrom /mnt/cdrom
-
-echo "================================================================================"
-echo "You need mount VBoxLinuxAdditions"
-echo "================================================================================"
-
-read VAR
 
 #安装 增强工具
 /mnt/cdrom/VBoxLinuxAdditions.run
@@ -88,9 +89,8 @@ read VAR
 #创建共享目录
 mkdir /home/winshare
 
-echo "================================================================================"
 echo "You need mount VBOX: winshare"
-echo "================================================================================"
+echo "press enter to continue"
 
 read VAR
 
@@ -111,7 +111,8 @@ systemctl enable home-winshare.mount
 systemctl start home-winshare.mount
 
 
-echo "set ok"
+echo "share folder > ok"
+echo "press enter to continue"
 
 read VAR
 
@@ -124,7 +125,8 @@ echo "==========================================================================
 # kenerl update (share folder) ** need for reboot 
 yum -y update kernel
 
-echo "set ok"
+echo "update kernel > ok"
+echo "press enter to continue"
 
 read VAR
 
