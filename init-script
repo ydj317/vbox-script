@@ -8,7 +8,8 @@ if [ $(id -u) != "0" ]; then
   exit 1
 fi
 
-# Header prompt
+######################################################################################
+
 echo "================================================================================"
 echo "host-only ip set"
 echo "================================================================================"
@@ -22,7 +23,46 @@ systemctl restart network
 
 echo "set ok"
 
-# Header prompt
+read VAR
+
+######################################################################################
+
+echo "================================================================================"
+echo "selinux off"
+echo "================================================================================"
+
+
+# Disable SeLinux
+if [ -s /etc/selinux/config ]; then
+  sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
+  setenforce 0
+fi
+
+echo "set ok"
+
+read VAR
+
+######################################################################################
+
+echo "================================================================================"
+echo "change yum repo"
+echo "================================================================================"
+
+# http://mirrors.163.com/.help/centos.html
+mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
+curl http://mirrors.163.com/.help/CentOS7-Base-163.repo -o /etc/yum.repos.d/CentOS7-Base-163.repo
+
+
+yum clean all
+yum makecache
+
+echo "set ok"
+
+read VAR
+
+######################################################################################
+
+
 echo "================================================================================"
 echo "share folder"
 echo "================================================================================"
@@ -36,12 +76,23 @@ yum -y install kernel-devel bzip2 gcc
 mkdir /mnt/cdrom
 mount /dev/cdrom /mnt/cdrom
 
+echo "================================================================================"
+echo "You need mount VBoxLinuxAdditions"
+echo "================================================================================"
+
+read VAR
+
 #安装 增强工具
 /mnt/cdrom/VBoxLinuxAdditions.run
 
-
 #创建共享目录
 mkdir /home/winshare
+
+echo "================================================================================"
+echo "You need mount VBOX: winshare"
+echo "================================================================================"
+
+read VAR
 
 #创建服务文件
 echo "[Unit]
@@ -62,30 +113,25 @@ systemctl start home-winshare.mount
 
 echo "set ok"
 
-# Header prompt
+read VAR
+
+######################################################################################
+
 echo "================================================================================"
-echo "selinux off , host-only ip set"
+echo "update kernel"
 echo "================================================================================"
-
-
-# Disable SeLinux
-if [ -s /etc/selinux/config ]; then
-  sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
-  setenforce 0
-fi
-
-# http://mirrors.163.com/.help/centos.html
-mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
-curl http://mirrors.163.com/.help/CentOS7-Base-163.repo -o /etc/yum.repos.d/CentOS7-Base-163.repo
-
-
-yum clean all
-yum makecache
 
 # kenerl update (share folder) ** need for reboot 
 yum -y update kernel
 
-reboot
+echo "set ok"
 
+read VAR
+
+######################################################################################
+
+echo "================================================================================"
+echo "You need reboot system"
+echo "================================================================================"
 
 exit 0
