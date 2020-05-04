@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+clear
+
+# Check if user is root
+if [ $(id -u) != "0" ]; then
+  echo "Error: You must be root to run this script."
+  exit 1
+fi
+
+######################################################################################
+
+echo "================================================================================"
+echo "host-only ip set"
+echo "================================================================================"
+
+echo "DEVICE=enp0s8
+ONBOOT=yes
+BOOTPROTO=static
+IPADDR0=192.168.56.200" > /etc/sysconfig/network-scripts/ifcfg-enp0s8
+
+systemctl restart network
